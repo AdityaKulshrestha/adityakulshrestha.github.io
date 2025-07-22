@@ -1,4 +1,4 @@
-baseURL = 'https://adityakulshrestha.github.io/AdityaKulshrestha/'
+baseURL = 'https://adityakulshrestha.github.io'
 languageCode = 'en-us'
 title = 'Aditya Kulshrestha'
 theme = 'maverick'
