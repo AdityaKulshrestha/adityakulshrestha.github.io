@@ -1,14 +1,14 @@
 {
   "version": "https://jsonfeed.org/version/1",
-  "title": "Maverick",
-  "home_page_url": "http://localhost:1313/",
-  "feed_url": "http://localhost:1313/feed.json",
+  "title": "Aditya Kulshrestha",
+  "home_page_url": "https://adityakulshrestha.github.io/AdityaKulshrestha/",
+  "feed_url": "https://adityakulshrestha.github.io/AdityaKulshrestha/feed.json",
   "description": "A minimal hugo theme focus on content",
-  "favicon": "http://localhost:1313//assets/favicon.ico",
+  "favicon": "https://adityakulshrestha.github.io/AdityaKulshrestha//assets/favicon.ico",
   "expired": false,
   "author": {
     "name": "Calvin Tran",
-    "url": "http://localhost:1313/"
+    "url": "https://adityakulshrestha.github.io/AdityaKulshrestha/"
   },
   "items": [
     
@@ -21,12 +21,12 @@
       "summary": "",
       "content_text": "This blog talks about the unravelling of pytorch internals! ",
       "content_html": "\u003ch1 id=\"this-blog-talks-about-the-unravelling-of-pytorch-internals\"\u003eThis blog talks about the unravelling of pytorch internals!\u003c/h1\u003e\n",
-      "url": "http://localhost:1313/posts/pytorch_internals/",
+      "url": "https://adityakulshrestha.github.io/AdityaKulshrestha/posts/pytorch_internals/",
       "date_published": "22076-22-09T712:2222:00+00:00",
       "date_modified": "22076-22-09T712:2222:00+00:00",
       "author": {
         "name": "Calvin Tran",
-        "url": "http://localhost:1313/"
+        "url": "https://adityakulshrestha.github.io/AdityaKulshrestha/"
       }
     }
     
