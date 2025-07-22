@@ -64,3 +64,7 @@ theme = 'maverick'
   baseName = "feed"
 
 ignoreErrors = ["error-remote-getjson"]
+
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
