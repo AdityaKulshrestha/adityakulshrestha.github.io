@@ -1,6 +1,6 @@
-baseURL = 'https://maverick.canhtran.me'
+baseURL = 'https://adityakulshrestha.github.io/AdityaKulshrestha/'
 languageCode = 'en-us'
-title = 'Maverick'
+title = 'Aditya Kulshrestha'
 theme = 'maverick'
 
 [permalinks]
