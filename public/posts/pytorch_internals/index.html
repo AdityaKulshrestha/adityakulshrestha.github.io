@@ -1,32 +1,32 @@
 <!doctype html>
 <html lang="en">
-  <head>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Liste - https://adityakulshrestha.github.io/AdityaKulshrestha/">
-    <title>Pytorch_internals | Aditya Kulshrestha</title>
+    <meta name="author" content="Liste - http://localhost:1313/">
+    <title>Pytorch_internals | Hi there!</title>
     <meta name="description" content="A minimal hugo theme focus on content">
     <meta property="og:title" content="Pytorch_internals" />
-<meta property="og:description" content="This blog talks about the unravelling of pytorch internals! " />
+<meta property="og:description" content="Ever wondered what goes inside when you actually call torch.compile(model)? There are a bunch of individual components that work together in a sequential manner to squeeze out the best performance from the GPU. Each component passes on some intermediate packets called Intermediate Representation (IRs) (more about this later) to the next component in the sequence. Let&rsquo;s take a look what are the these components at an overview level and then we will dive deep into each one of them." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://adityakulshrestha.github.io/AdityaKulshrestha/posts/pytorch_internals/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="http://localhost:1313/posts/pytorch_internals/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2025-07-22T14:12:54+00:00" />
 <meta property="article:modified_time" content="2025-07-22T14:12:54+00:00" />
 
 
     <meta itemprop="name" content="Pytorch_internals">
-<meta itemprop="description" content="This blog talks about the unravelling of pytorch internals! "><meta itemprop="datePublished" content="2025-07-22T14:12:54+00:00" />
+<meta itemprop="description" content="Ever wondered what goes inside when you actually call torch.compile(model)? There are a bunch of individual components that work together in a sequential manner to squeeze out the best performance from the GPU. Each component passes on some intermediate packets called Intermediate Representation (IRs) (more about this later) to the next component in the sequence. Let&rsquo;s take a look what are the these components at an overview level and then we will dive deep into each one of them."><meta itemprop="datePublished" content="2025-07-22T14:12:54+00:00" />
 <meta itemprop="dateModified" content="2025-07-22T14:12:54+00:00" />
-<meta itemprop="wordCount" content="9">
+<meta itemprop="wordCount" content="551">
 <meta itemprop="keywords" content="" />
     
-    <link rel="canonical" href="https://adityakulshrestha.github.io/AdityaKulshrestha/posts/pytorch_internals/">
-    <link rel="icon" href="https://adityakulshrestha.github.io/AdityaKulshrestha//assets/favicon.ico">
+    <link rel="canonical" href="http://localhost:1313/posts/pytorch_internals/">
+    <link rel="icon" href="http://localhost:1313//assets/favicon.ico">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
-    <link rel="alternate" type="application/atom+xml" title="Aditya Kulshrestha" href="https://adityakulshrestha.github.io/AdityaKulshrestha//atom.xml" />
-    <link rel="alternate" type="application/json" title="Aditya Kulshrestha" href="https://adityakulshrestha.github.io/AdityaKulshrestha//feed.json" />
+    <link rel="alternate" type="application/atom+xml" title="Hi there!" href="http://localhost:1313//atom.xml" />
+    <link rel="alternate" type="application/json" title="Hi there!" href="http://localhost:1313//feed.json" />
     <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bricolage+Grotesque">
     
@@ -43,12 +43,12 @@
         "name": "Pytorch_internals",
         "headline": "Pytorch_internals",
         "alternativeHeadline": "",
-        "description": "This blog talks about the unravelling of pytorch internals! ",
+        "description": "Ever wondered what goes inside when you actually call torch.compile(model)? There are a bunch of individual components that work together in a sequential manner to squeeze out the best performance from the GPU. Each component passes on some intermediate packets called Intermediate Representation (IRs) (more about this later) to the next component in the sequence. Let\u0026rsquo;s take a look what are the these components at an overview level and then we will dive deep into each one of them.",
         "inLanguage": "en-us",
         "isFamilyFriendly": "true",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/adityakulshrestha.github.io\/AdityaKulshrestha\/posts\/pytorch_internals\/"
+            "@id": "http:\/\/localhost:1313\/posts\/pytorch_internals\/"
         },
         "author" : {
             "@type": "Person",
@@ -62,25 +62,25 @@
             "@type": "Person",
             "name": ""
         },
-        "copyrightHolder" : "Aditya Kulshrestha",
+        "copyrightHolder" : "Hi there!",
         "copyrightYear" : "2025",
         "dateCreated": "2025-07-22T14:12:54.00Z",
         "datePublished": "2025-07-22T14:12:54.00Z",
         "dateModified": "2025-07-22T14:12:54.00Z",
         "publisher":{
             "@type":"Organization",
-            "name": "Aditya Kulshrestha",
-            "url": "https://adityakulshrestha.github.io/AdityaKulshrestha/",
+            "name": "Hi there!",
+            "url": "http://localhost:1313/",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https:\/\/adityakulshrestha.github.io\/assets\/favicon.ico",
+                "url": "http:\/\/localhost:1313\/assets\/favicon.ico",
                 "width":"32",
                 "height":"32"
             }
         },
-        "image": "https://adityakulshrestha.github.io/assets/favicon.ico",
-        "url" : "https:\/\/adityakulshrestha.github.io\/AdityaKulshrestha\/posts\/pytorch_internals\/",
-        "wordCount" : "9",
+        "image": "http://localhost:1313/assets/favicon.ico",
+        "url" : "http:\/\/localhost:1313\/posts\/pytorch_internals\/",
+        "wordCount" : "551",
         "genre" : [ ],
         "keywords" : [ ]
     }
@@ -118,8 +118,8 @@
     
 <header>
   <p style="padding: 0;margin: 0;">
-    <a href="https://adityakulshrestha.github.io/AdityaKulshrestha/">
-      <b>Aditya Kulshrestha</b>
+    <a href="http://localhost:1313/">
+      <b>Hi there!</b>
       <span class="text-stone-500 animate-blink">▮</span>
     </a>
   </p>
@@ -135,11 +135,11 @@
       
       
         <li class="">
-          <a href="/AdityaKulshrestha/posts/"><span>Post</span></a>
+          <a href="/posts/"><span>Post</span></a>
         </li>
       
         <li class="">
-          <a href="/AdityaKulshrestha/about/"><span>About</span></a>
+          <a href="/about/"><span>About</span></a>
         </li>
       
     </ul>
@@ -149,7 +149,109 @@
 <hr class="hr-list" style="padding: 0;margin: 0;">
     <section>
       <h2 class="post">Pytorch_internals</h2>
-      <h1 id="this-blog-talks-about-the-unravelling-of-pytorch-internals">This blog talks about the unravelling of pytorch internals!</h1>
+      <h1 id="heading"></h1>
+<p>Ever wondered what goes inside when you actually call torch.compile(model)?
+There are a bunch of individual components that work together in a sequential manner to squeeze out the best performance from the GPU. Each component passes on some intermediate packets called <em>Intermediate Representation (IRs)</em> (more about this later) to the next component in the sequence.
+Let&rsquo;s take a look what are the these components at an overview level and then we will dive deep into each one of them.</p>
+<p><strong>torch.compile components</strong></p>
+<ul>
+<li>TorchDynamo: The fronend responsible for intercepting the Python code and convert it to graphs.</li>
+<li>AOTAutograd</li>
+<li>PrimTorch - It decomposes complex PyTorch operations into simpler, frequently used &ldquo;primitive&rdquo; operations.</li>
+<li>TorchInductor</li>
+<li>Triton(GPU), C++(CPU), CUDA (GPU)</li>
+</ul>
+<p><img
+  src="./assets/pytorch_internals/components_overview.avif"
+  alt="Components Overview"
+  loading="lazy"
+  decoding="async"
+  class="full-width"
+/>
+
+</p>
+<h3 id="1-torchdynamo">1. TorchDynamo</h3>
+<p>TorchDynamo is the first and foremost component in the sequence which is responsible for intercepting the Python code.
+It intercepts the Python bytecode at runtime and rewrites blocks of user code into graphs. This involves extracting subgraphs containing PyTorch operations while leaving the non-PyTorcch code untouched.</p>
+<p><em>Shape Polymorphism</em> -</p>
+<p><em>Fallback</em> - If the code can&rsquo;t be converted into graphs, it safely fall backs to PyTorch&rsquo;s eager execution.</p>
+<p><em>Intermediate Representation (IR)</em> -</p>
+<h3 id="2-ahead-of-time-autograd-aotautograd">2. Ahead-Of-Time Autograd (AOTAutograd)</h3>
+<p>As the name suggests AOTAutograd is responsible for differentiation and backpropagation graph generation.
+it generates the backware computation graph (needed for the gradients and training) from the captured forward graph (passed by the TorchDynamo). However it only captures the backward graph and doesn&rsquo;t apply the graph level optimization.</p>
+<h3 id="3-primtorch">3. PrimTorch</h3>
+<p>It breaks down the complex PyTorch operations into simpler (primitive operations). This breaking down actually helps optimizing the graph further. It accepts a FX Graph and decomposes the operations into simpler operations.</p>
+<h3 id="4-torchinductor">4. TorchInductor</h3>
+<p>It further optimizes the graph and generates code to finally run on the hardware. It takes a simplified computation graphs and generates hihgly optimized low level code for the target hardware (CPU, HPU, GPU).</p>
+<p>It also determines hardware level optimizations such as memory planning, tiling etc.</p>
+<p>Due to multiple hardware adoption, torchinductor supports multiple backend
+based on the target hardware.</p>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inductor</td>
+<td>Default backend: highly optimized for CPUs and GPUs</td>
+</tr>
+<tr>
+<td>Eager</td>
+<td>Runs the model without the graph capture, no optimization happens in this mode</td>
+</tr>
+<tr>
+<td>aot_eager</td>
+<td>It applies the AutoAutograd to capture the graph but doesn&rsquo;t apply any further backend optimization</td>
+</tr>
+<tr>
+<td>cudagraphs</td>
+<td>Leverages CUDA Graphs for reduces CPU overhead</td>
+</tr>
+<tr>
+<td>ipex</td>
+<td>Uses Intel Extension for PyTorch for CPU-optimized execution</td>
+</tr>
+<tr>
+<td>onnxrt</td>
+<td>Uses ONNX runtime for acceleration on CPU/GPU</td>
+</tr>
+<tr>
+<td>torch_tensorrt</td>
+<td>TensorRT-backend for high-speed inference on Nvidia-GPUs</td>
+</tr>
+<tr>
+<td>tvm</td>
+<td>Uses Apache TVM compiler for cross hardware inference</td>
+</tr>
+<tr>
+<td>openvino</td>
+<td>Uses Intel OpenVINO for accelerated inference on supported Intel hardware</td>
+</tr>
+</tbody>
+</table>
+<p>Now if you see here the output code for the torchinductor is nothing but Python. Seems counterintuitive right? We ingest in Python code and burps out Python code but the output Python code is faster.</p>
+<p>NOTE (DO THIS BEFORE PUBLISHING) -</p>
+<ul>
+<li>Add a section about how each component was used in eager mode.</li>
+<li>Explain more about CPU overhead in cudagraphs.</li>
+</ul>
+<h2 id="debugging">Debugging</h2>
+<p>Now that we have understood what are the components in torch.compile. How can we understand how each component is doing and which component is failing when we do torch.compile.</p>
+<p><em>The best environment variable for debugging is</em>
+<code>TORCH_COMPILE_DEBUG=1</code></p>
+<h3 id="torchdynamo-logging">TorchDynamo logging</h3>
+<h4 id="references">References</h4>
+<ol>
+<li><a href="https://www.youtube.com/live/1FSBurHpH_Q?si=NMWkZYZx1FaNQxYs">PyTorch 2.0 Live Q&amp;A Series: PT2 Profiling and Debugging</a></li>
+<li><a href="https://blog.ezyang.com/2024/11/ways-to-use-torch-compile/"></a></li>
+<li><a href="https://docs.google.com/document/d/1y5CRfMLdwEoF1nTk9q8qEu1mgMUuUtvhklPKJ2emLU8/edit?tab=t.0">torch.compile, the missing manual</a></li>
+<li><a href="https://docs.pytorch.org/docs/stable/logging.html">PyTorch Logging</a></li>
+<li><a href="https://zdevito.github.io/2022/08/16/memory-snapshots.html">Debugging PyTorch Memory with Snapshot</a></li>
+<li><a href="https://docs.pytorch.org/docs/stable/torch.compiler.html">pytorch.compile docs</a></li>
+</ol>
 
       
       <div class="post-date">

@@ -1,25 +1,127 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     
-    <title>Aditya Kulshrestha</title>
+    <title>Hi there!</title>
     <description>A minimal hugo theme focus on content</description>
-    <link>https://adityakulshrestha.github.io/AdityaKulshrestha/</link>
+    <link>http://localhost:1313/</link>
     
     <language>en</language>
     <copyright>Copyright 2025, Calvin Tran</copyright>
-    <lastBuildDate>Tue, 22 Jul 2025 14:12:54 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 22 Jul 2025 19:27:45 +0000</lastBuildDate>
     <generator>Hugo - gohugo.io</generator>
     <docs>http://cyber.harvard.edu/rss/rss.html</docs>
-    <atom:link href="https://adityakulshrestha.github.io/AdityaKulshrestha//atom.xml" rel="self" type="application/atom+xml"/>
+    <atom:link href="http://localhost:1313//atom.xml" rel="self" type="application/atom+xml"/>
     
     
     <item>
       <title>Pytorch_internals</title>
-      <link>https://adityakulshrestha.github.io/AdityaKulshrestha/posts/pytorch_internals/</link>
-      <description>&lt;h1 id=&#34;this-blog-talks-about-the-unravelling-of-pytorch-internals&#34;&gt;This blog talks about the unravelling of pytorch internals!&lt;/h1&gt;
+      <link>http://localhost:1313/posts/pytorch_internals/</link>
+      <description>&lt;h1 id=&#34;heading&#34;&gt;&lt;/h1&gt;
+&lt;p&gt;Ever wondered what goes inside when you actually call torch.compile(model)?
+There are a bunch of individual components that work together in a sequential manner to squeeze out the best performance from the GPU. Each component passes on some intermediate packets called &lt;em&gt;Intermediate Representation (IRs)&lt;/em&gt; (more about this later) to the next component in the sequence.
+Let&amp;rsquo;s take a look what are the these components at an overview level and then we will dive deep into each one of them.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;torch.compile components&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TorchDynamo: The fronend responsible for intercepting the Python code and convert it to graphs.&lt;/li&gt;
+&lt;li&gt;AOTAutograd&lt;/li&gt;
+&lt;li&gt;PrimTorch - It decomposes complex PyTorch operations into simpler, frequently used &amp;ldquo;primitive&amp;rdquo; operations.&lt;/li&gt;
+&lt;li&gt;TorchInductor&lt;/li&gt;
+&lt;li&gt;Triton(GPU), C++(CPU), CUDA (GPU)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img
+  src=&#34;./assets/pytorch_internals/components_overview.avif&#34;
+  alt=&#34;Components Overview&#34;
+  loading=&#34;lazy&#34;
+  decoding=&#34;async&#34;
+  class=&#34;full-width&#34;
+/&gt;
+
+&lt;/p&gt;
+&lt;h3 id=&#34;1-torchdynamo&#34;&gt;1. TorchDynamo&lt;/h3&gt;
+&lt;p&gt;TorchDynamo is the first and foremost component in the sequence which is responsible for intercepting the Python code.
+It intercepts the Python bytecode at runtime and rewrites blocks of user code into graphs. This involves extracting subgraphs containing PyTorch operations while leaving the non-PyTorcch code untouched.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Shape Polymorphism&lt;/em&gt; -&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Fallback&lt;/em&gt; - If the code can&amp;rsquo;t be converted into graphs, it safely fall backs to PyTorch&amp;rsquo;s eager execution.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Intermediate Representation (IR)&lt;/em&gt; -&lt;/p&gt;
+&lt;h3 id=&#34;2-ahead-of-time-autograd-aotautograd&#34;&gt;2. Ahead-Of-Time Autograd (AOTAutograd)&lt;/h3&gt;
+&lt;p&gt;As the name suggests AOTAutograd is responsible for differentiation and backpropagation graph generation.
+it generates the backware computation graph (needed for the gradients and training) from the captured forward graph (passed by the TorchDynamo). However it only captures the backward graph and doesn&amp;rsquo;t apply the graph level optimization.&lt;/p&gt;
+&lt;h3 id=&#34;3-primtorch&#34;&gt;3. PrimTorch&lt;/h3&gt;
+&lt;p&gt;It breaks down the complex PyTorch operations into simpler (primitive operations). This breaking down actually helps optimizing the graph further. It accepts a FX Graph and decomposes the operations into simpler operations.&lt;/p&gt;
+&lt;h3 id=&#34;4-torchinductor&#34;&gt;4. TorchInductor&lt;/h3&gt;
+&lt;p&gt;It further optimizes the graph and generates code to finally run on the hardware. It takes a simplified computation graphs and generates hihgly optimized low level code for the target hardware (CPU, HPU, GPU).&lt;/p&gt;
+&lt;p&gt;It also determines hardware level optimizations such as memory planning, tiling etc.&lt;/p&gt;
+&lt;p&gt;Due to multiple hardware adoption, torchinductor supports multiple backend
+based on the target hardware.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Backend&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Inductor&lt;/td&gt;
+&lt;td&gt;Default backend: highly optimized for CPUs and GPUs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Eager&lt;/td&gt;
+&lt;td&gt;Runs the model without the graph capture, no optimization happens in this mode&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;aot_eager&lt;/td&gt;
+&lt;td&gt;It applies the AutoAutograd to capture the graph but doesn&amp;rsquo;t apply any further backend optimization&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;cudagraphs&lt;/td&gt;
+&lt;td&gt;Leverages CUDA Graphs for reduces CPU overhead&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ipex&lt;/td&gt;
+&lt;td&gt;Uses Intel Extension for PyTorch for CPU-optimized execution&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;onnxrt&lt;/td&gt;
+&lt;td&gt;Uses ONNX runtime for acceleration on CPU/GPU&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;torch_tensorrt&lt;/td&gt;
+&lt;td&gt;TensorRT-backend for high-speed inference on Nvidia-GPUs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;tvm&lt;/td&gt;
+&lt;td&gt;Uses Apache TVM compiler for cross hardware inference&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;openvino&lt;/td&gt;
+&lt;td&gt;Uses Intel OpenVINO for accelerated inference on supported Intel hardware&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Now if you see here the output code for the torchinductor is nothing but Python. Seems counterintuitive right? We ingest in Python code and burps out Python code but the output Python code is faster.&lt;/p&gt;
+&lt;p&gt;NOTE (DO THIS BEFORE PUBLISHING) -&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Add a section about how each component was used in eager mode.&lt;/li&gt;
+&lt;li&gt;Explain more about CPU overhead in cudagraphs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;debugging&#34;&gt;Debugging&lt;/h2&gt;
+&lt;p&gt;Now that we have understood what are the components in torch.compile. How can we understand how each component is doing and which component is failing when we do torch.compile.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;The best environment variable for debugging is&lt;/em&gt;
+&lt;code&gt;TORCH_COMPILE_DEBUG=1&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;torchdynamo-logging&#34;&gt;TorchDynamo logging&lt;/h3&gt;
+&lt;h4 id=&#34;references&#34;&gt;References&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/live/1FSBurHpH_Q?si=NMWkZYZx1FaNQxYs&#34;&gt;PyTorch 2.0 Live Q&amp;amp;A Series: PT2 Profiling and Debugging&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.ezyang.com/2024/11/ways-to-use-torch-compile/&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.google.com/document/d/1y5CRfMLdwEoF1nTk9q8qEu1mgMUuUtvhklPKJ2emLU8/edit?tab=t.0&#34;&gt;torch.compile, the missing manual&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.pytorch.org/docs/stable/logging.html&#34;&gt;PyTorch Logging&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://zdevito.github.io/2022/08/16/memory-snapshots.html&#34;&gt;Debugging PyTorch Memory with Snapshot&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.pytorch.org/docs/stable/torch.compiler.html&#34;&gt;pytorch.compile docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
 </description>
       <author>Calvin Tran</author>
-      <guid>https://adityakulshrestha.github.io/AdityaKulshrestha/posts/pytorch_internals/</guid>
+      <guid>http://localhost:1313/posts/pytorch_internals/</guid>
       <pubDate>Tue, 22 Jul 2025 14:12:54 +0000</pubDate>
     </item>
     
