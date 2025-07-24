@@ -1,6 +1,6 @@
 baseURL = 'https://adityakulshrestha.github.io'
 languageCode = 'en-us'
-title = 'Hi there!'
+title = 'Aditya Kulshrestha'
 theme = 'maverick'
 
 [permalinks]

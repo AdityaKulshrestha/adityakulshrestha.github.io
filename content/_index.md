@@ -18,6 +18,23 @@ I have previously worked at Sarvam.ai on agentic voice agents, PuchAI on mass di
     </div>
 </div>
 
+<p align="center">
+  <a href="https://github.com/adityakulshrestha" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" width="30" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://www.linkedin.com/in/adityakulshrestha02/" target="_blank">
+    <img src="https://img.icons8.com/ios-filled/50/000000/linkedin.png" alt="LinkedIn" width="30" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://x.com/Aditya_kul02" target="_blank">
+    <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-black-icon.png" alt="X" width="30" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://drive.google.com/file/d/1ibzWy5g3G9uuynhhz4apQzzxow59OvG0/view?usp=drive_link" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/64/64572.png" alt="Resume" width="30" />
+  </a>
+</p>
 
 
 ## Updates
