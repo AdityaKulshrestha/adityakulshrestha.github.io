@@ -1,6 +1,6 @@
 baseURL = 'https://adityakulshrestha.github.io'
 languageCode = 'en-us'
-title = 'Aditya Kulshrestha'
+title = 'Aditya Kulshrestha's Blogs'
 theme = 'maverick'
 
 [permalinks]
@@ -19,11 +19,7 @@ theme = 'maverick'
 
 
 [menu]
-  [[menu.main]]
-    identifier = "about"
-    name = "About"
-    url = "/about/"
-    weight = "-110"
+
   [[menu.main]]
     identifier = "posts"
     name = "Post"

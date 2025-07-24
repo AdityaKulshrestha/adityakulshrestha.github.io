@@ -19,7 +19,7 @@ Let's take a look what are the these components at an overview level and then we
 <div style="text-align: center;">
   <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fmiy3lxuoigpfupv5zogz.png"
        alt="Components Overview: Illustration taken from Minwook Je blog on torch.compile vs torch.export"
-       style="width: 300px; max-width: 100%; height: auto;" />
+       style="width: 500px; max-width: 100%; height: auto;" />
   <div style="font-size: 0.95em; color: #666; margin-top: 4px;">
     Components Overview: Illustration taken from Minwook Je blog on torch.compile vs torch.export
   </div>
@@ -499,7 +499,7 @@ Now that we have understood what are the components in torch.compile. Let's unde
     Time took to execute I run: 0.40
     ```
 
-    Notice the recompilation got triggered because the graph was expecting a shape of $[8, 1024]$ and not $[16, 1024]$ which resulted in higher time to execution.
+    Notice the recompilation got triggered because the graph was expecting a shape of `[8, 1024]` and not `[16, 1024]` which resulted in higher time to execution.
 
 2. Compilation Mode
 We talked about different modes of compilation which can be suited different according to the use cases. Let's see what fits best for our case. 
@@ -616,7 +616,7 @@ Output
 ```
 
 ## Bonus
-All the codes and logs are available in this ![notebook](). Feel free to play around and unwrap the layers of pytorch.compile.
+All the codes and logs are available in this [notebook](https://colab.research.google.com/drive/13Awttk7WxJ9nUGpviHUTB1RIF8l0DsH8?usp=sharing). Feel free to play around and unwrap the layers of pytorch.compile.
 
 Happy Learning!
 
