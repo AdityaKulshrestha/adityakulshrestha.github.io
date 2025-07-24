@@ -4,8 +4,6 @@ date = 2025-07-22T14:12:54Z
 draft = false
 +++
 
-# PyTorch Compile Internals
-
 Ever wondered what goes inside when you actually call torch.compile(model)?
 There are a bunch of individual components that work together in a sequential manner to squeeze out the best performance from the GPU. Each component passes on some intermediate packets called *Intermediate Representation (IRs)* (more about this later) to the next component in the sequence. 
 Let's take a look what are the these components at an overview level and then we will dive deep into each one of them.
@@ -18,7 +16,14 @@ Let's take a look what are the these components at an overview level and then we
 - **TorchInductor** - Performs optimization including Fusion and converts the input FX Graph into triton code (for GPUs) or C++ code (for CPUs).
 
 
-![Components Overview: Illustration taken from Minwook Je blog on torch.compile vs torch.export](https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fmiy3lxuoigpfupv5zogz.png)
+<div style="text-align: center;">
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fmiy3lxuoigpfupv5zogz.png"
+       alt="Components Overview: Illustration taken from Minwook Je blog on torch.compile vs torch.export"
+       style="width: 300px; max-width: 100%; height: auto;" />
+  <div style="font-size: 0.95em; color: #666; margin-top: 4px;">
+    Components Overview: Illustration taken from Minwook Je blog on torch.compile vs torch.export
+  </div>
+</div>
 
 
 ### 1. TorchDynamo
@@ -28,8 +33,8 @@ It intercepts the Python bytecode at runtime and rewrites blocks of user code in
 *Shape Polymorphism* - Shape polymorphism is the ability of function to adapt to dynamic shape changes. When you do torch.compile, TorchDynamo doesn't prepare the graph for a static shaped input tensors. But it uses symbolic representation of the tensors shape which allows it to accept dynamic shapes as well. 
 
 How it works?
-- Symbolic Shape Representation - During the graph capture, the dimension sizes are not kept fixed but are treated *symbolically*. This helps the graph to work with any dynamic shape. TorchDynamo uses SymPy symbolic math library to represent these unknown shapes. The symbolic shapes are passed through the IR enabling TorchInductor to generate the code that is valid for any runtime shape matching the symbolic pattern. It uses something similar to a faketensor (more precisely ShapeEnv attached to a FakeTensorMode) which keeps track of symbolic shape state.
-- Guards - To ensure that the input shapes matches to that of final symbolic shape represented by the TorchInductor. It relies on something called as Guard which are responsible for guarding (allowing) only those tensors which matches the symbolic shape. 
+- **Symbolic Shape Representation** - During the graph capture, the dimension sizes are not kept fixed but are treated *symbolically*. This helps the graph to work with any dynamic shape. TorchDynamo uses SymPy symbolic math library to represent these unknown shapes. The symbolic shapes are passed through the IR enabling TorchInductor to generate the code that is valid for any runtime shape matching the symbolic pattern. It uses something similar to a faketensor (more precisely ShapeEnv attached to a FakeTensorMode) which keeps track of symbolic shape state.
+- **Guards** - To ensure that the input shapes matches to that of final symbolic shape represented by the TorchInductor. It relies on something called as Guard which are responsible for guarding (allowing) only those tensors which matches the symbolic shape. 
 If any data is not matched, the guard triggers a recompilation for those shape and stores it for future reference. 
 The Guard checks the following torch.Tensor properties:
 
@@ -42,14 +47,14 @@ The Guard checks the following torch.Tensor properties:
     - sizes*
     - strides* 
 
-- Loop-Level IR and Indexing - The loops and memory access patterns are also expressed through symbolic representations so that  the output shapes, stride calculations and buffer allocations all adapt to the actual runtime of the input tensor shape.
+- **Loop-Level IR and Indexing** - The loops and memory access patterns are also expressed through symbolic representations so that  the output shapes, stride calculations and buffer allocations all adapt to the actual runtime of the input tensor shape.
 
-- Meta Functions and Shape Propagation - Each PyTorch operator traces "meta" computation, meaning functions that can deduce the output shape for any arbitrary shape inputs without explicitly performing the tensor computations. It enables TorchInductor to carry information regarding unknown dimension through all computations and memory allocations.
-- Efficient Reuse and Specialization - The compilation for one family of inputs shapes (one that fits the guard) can be reused. Only new inputs shape which doesn't fit the guards needs recompilation.
+- **Meta Functions and Shape Propagation** - Each PyTorch operator traces "meta" computation, meaning functions that can deduce the output shape for any arbitrary shape inputs without explicitly performing the tensor computations. It enables TorchInductor to carry information regarding unknown dimension through all computations and memory allocations.
+- **Efficient Reuse and Specialization** - The compilation for one family of inputs shapes (one that fits the guard) can be reused. Only new inputs shape which doesn't fit the guards needs recompilation.
 
-*Fallback* - If the code can't be converted into graphs, it safely fall backs to PyTorch's eager execution.
+**Fallback** - If the code can't be converted into graphs, it safely fall backs to PyTorch's eager execution.
 
-*Intermediate Representation (IR)* - FX Graph and modified bytecode capturing only PyTorch operations and tensors and leaving normal Python non-essentials.
+**Intermediate Representation (IR)** - FX Graph and modified bytecode capturing only PyTorch operations and tensors and leaving normal Python non-essentials.
 
 Let's take an example of a simple *Self Attention Code (without masking)*:
 
@@ -237,11 +242,7 @@ As the name suggests AOTAutograd is responsible for differentiation and backprop
 it generates the backware computation graph (needed for the gradients and training) from the captured forward graph (passed by the TorchDynamo). However it only captures the backward graph and doesn't apply the graph level optimization.
 
 
-### 3. PrimTorch
-It breaks down the complex PyTorch operations into simpler (primitive operations). This breaking down actually helps optimizing the graph further. It accepts a FX Graph and decomposes the operations into simpler operations.
-
-
-### 4. TorchInductor
+### 3. TorchInductor
 It further optimizes the graph and generates code to finally run on the hardware. It takes a simplified computation graphs and generates hihgly optimized low level code for the target hardware (CPU, HPU, GPU).
 
 It also determines hardware level optimizations such as memory planning, tiling etc.
@@ -274,11 +275,26 @@ Let's consider the same Attention Block example and let's see what optimizations
 
     Assume that the geometrical shapes are the data points which are juggling between the memory and compute (your GPU). Now after every compute you send the data points back to the memory. This takes up a lot of time.
 
-    ![Before Fusion: Illustration taken from Making Deep Learning Go Brrrr From First Principles by Horace He](https://horace.io/img/perf_intro/multi_operators.png)
+    <div style="text-align: center;">
+    <img src="https://horace.io/img/perf_intro/multi_operators.png"
+        alt="Before Fusion: Illustration taken from Making Deep Learning Go Brrrr From First Principles by Horace He"
+        style="width: 300px; max-width: 100%; height: auto;" />
+    <div style="font-size: 0.95em; color: #666; margin-top: 4px;">
+        Before Fusion: Illustration taken from Making Deep Learning Go Brrrr From First Principles by Horace He
+    </div>
+    </div>
 
     To save this time, we load the data points once, perform all the compute and then finally send it back to the memory.
 
-    ![After Fusion: Illustration taken from Making Deep Learning Go Brrrr From First Principles by Horace He](https://horace.io/img/perf_intro/operator_fusion.png)
+    <div style="text-align: center;">
+    <img src="https://horace.io/img/perf_intro/operator_fusion.png"
+        alt="After Fusion: Illustration taken from Making Deep Learning Go Brrrr From First Principles by Horace He"
+        style="width: 300px; max-width: 100%; height: auto;" />
+    <div style="font-size: 0.95em; color: #666; margin-top: 4px;">
+        After Fusion: Illustration taken from Making Deep Learning Go Brrrr From First Principles by Horace He
+    </div>
+    </div>
+
 
     ```python
     logging_api.set_logs(inductor=logging.INFO, fusion=True)   # Let's see where the optimization is coming from
