@@ -256,6 +256,113 @@ It will also make you appreciate the subtleness in `.continuous()` and how does 
 As the name suggests AOTAutograd is responsible for differentiation and backpropagation graph generation.
 it generates the backware computation graph (needed for the gradients and training) from the captured forward graph (passed by the TorchDynamo). However it only captures the backward graph and doesn't apply the graph level optimization.
 
+Let see the forward and backward graph when it passes through the AOTAutograd.
+
+- Forward Graph
+
+  ```python
+  class GraphModule(torch.nn.Module):
+    def forward(
+      self, 
+      primals_1: "f32[64, 64][64, 1]cuda:0", 
+      primals_2: "f32[1, 4, 64][256, 64, 1]cuda:0", 
+      primals_3: "f32[64, 64][64, 1]cuda:0", 
+      primals_4: "f32[64, 64][64, 1]cuda:0"
+    ):
+      # q = self.W_q(x)
+      permute: "f32[64, 64][1, 64]cuda:0" = torch.ops.aten.permute.default(primals_1, [1, 0])
+      view: "f32[4, 64][64, 1]cuda:0" = torch.ops.aten.view.default(primals_2, [4, 64])
+      mm: "f32[4, 64][64, 1]cuda:0" = torch.ops.aten.mm.default(view, permute)
+      view_1: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.view.default(mm, [1, 4, 64])
+
+      # k = self.W_k(x)
+      permute_1: "f32[64, 64][1, 64]cuda:0" = torch.ops.aten.permute.default(primals_3, [1, 0])
+      mm_1: "f32[4, 64][64, 1]cuda:0" = torch.ops.aten.mm.default(view, permute_1)
+      view_3: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.view.default(mm_1, [1, 4, 64])
+
+      # v = self.W_v(x)
+      permute_2: "f32[64, 64][1, 64]cuda:0" = torch.ops.aten.permute.default(primals_4, [1, 0])
+      mm_2: "f32[4, 64][64, 1]cuda:0" = torch.ops.aten.mm.default(view, permute_2)
+      view_5: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.view.default(mm_2, [1, 4, 64])
+
+      # out = q @ k.transpose(-2, -1)
+      permute_3: "f32[1, 64, 4][256, 1, 64]cuda:0" = torch.ops.aten.permute.default(view_3, [0, 2, 1])
+      expand: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.expand.default(view_1, [1, 4, 64])
+      expand_1: "f32[1, 64, 4][256, 1, 64]cuda:0" = torch.ops.aten.expand.default(permute_3, [1, 64, 4])
+      bmm: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.bmm.default(expand, expand_1)
+
+      # out = torch.exp(out) / torch.sum(torch.exp(out), dim=-1, keepdim=True)
+      exp: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.exp.default(bmm)
+      sum_1: "f32[1, 4, 1][4, 1, 1]cuda:0" = torch.ops.aten.sum.dim_IntList(exp, [-1], True)
+      div: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.div.Tensor(exp, sum_1)
+
+      # return out @ v
+      expand_2: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.expand.default(div, [1, 4, 4])
+      expand_3: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.expand.default(view_5, [1, 4, 64])
+      bmm_1: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.bmm.default(expand_2, expand_3)
+      return (bmm_1, view, bmm, div, permute_5, permute_6, permute_7)
+  )
+  ```
+- Backward Graph
+  ```python
+
+  class GraphModule(torch.nn.Module):
+    def forward(self, view: "f32[4, 64][64, 1]cuda:0", bmm: "f32[1, 4, 4][16, 4, 1]cuda:0", div: "f32[1, 4, 4][16, 4, 1]cuda:0", permute_5: "f32[1, 64, 4][256, 1, 64]cuda:0", permute_6: "f32[1, 64, 4][256, 1, 64]cuda:0", permute_7: "f32[1, 4, 64][256, 64, 1]cuda:0", tangents_1: "f32[1, 4, 64][256, 64, 1]cuda:0"):
+        # return out @ v
+        expand_2: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.expand.default(div, [1, 4, 4])
+        permute_4: "f32[1, 4, 4][16, 1, 4]cuda:0" = torch.ops.aten.permute.default(expand_2, [0, 2, 1]);  expand_2 = None
+        bmm_2: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.bmm.default(permute_4, tangents_1);  permute_4 = None
+        bmm_3: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.bmm.default(tangents_1, permute_5);  tangents_1 = permute_5 = None
+
+        #  out = torch.exp(out) / torch.sum(torch.exp(out), dim=-1, keepdim=True)
+        exp: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.exp.default(bmm);  bmm = None
+        sum_1: "f32[1, 4, 1][4, 1, 1]cuda:0" = torch.ops.aten.sum.dim_IntList(exp, [-1], True)
+        div_2: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.div.Tensor(div, sum_1);  div = None
+        neg: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.neg.default(bmm_3)
+        mul: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.mul.Tensor(neg, div_2);  neg = div_2 = None
+        div_3: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.div.Tensor(bmm_3, sum_1);  bmm_3 = sum_1 = None
+        sum_2: "f32[1, 4, 1][4, 1, 1]cuda:0" = torch.ops.aten.sum.dim_IntList(mul, [2], True);  mul = None
+        expand_4: "f32[1, 4, 4][4, 1, 0]cuda:0" = torch.ops.aten.expand.default(sum_2, [1, 4, 4]);  sum_2 = None
+        mul_1: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.mul.Tensor(expand_4, exp);  expand_4 = None
+        mul_2: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.mul.Tensor(div_3, exp);  div_3 = exp = None
+        add: "f32[1, 4, 4][16, 4, 1]cuda:0" = torch.ops.aten.add.Tensor(mul_1, mul_2);  mul_1 = mul_2 = None
+
+        # out = q @ k.transpose(-2, -1)
+        bmm_4: "f32[1, 64, 4][256, 4, 1]cuda:0" = torch.ops.aten.bmm.default(permute_6, add);  permute_6 = None
+        bmm_5: "f32[1, 4, 64][256, 64, 1]cuda:0" = torch.ops.aten.bmm.default(add, permute_7);  add = permute_7 = None
+        permute_8: "f32[1, 4, 64][256, 1, 4]cuda:0" = torch.ops.aten.permute.default(bmm_4, [0, 2, 1]);  bmm_4 = None
+
+        # v = self.W_v(x)
+        view_18: "f32[4, 64][64, 1]cuda:0" = torch.ops.aten.view.default(bmm_2, [4, 64]);  bmm_2 = None
+        permute_9: "f32[64, 4][1, 64]cuda:0" = torch.ops.aten.permute.default(view_18, [1, 0]);  view_18 = None
+        mm_3: "f32[64, 64][64, 1]cuda:0" = torch.ops.aten.mm.default(permute_9, view);  permute_9 = None
+
+        # k = self.W_k(x)
+        view_19: "f32[4, 64][1, 4]cuda:0" = torch.ops.aten.view.default(permute_8, [4, 64]);  permute_8 = None
+        permute_12: "f32[64, 4][4, 1]cuda:0" = torch.ops.aten.permute.default(view_19, [1, 0]);  view_19 = None
+        mm_4: "f32[64, 64][64, 1]cuda:0" = torch.ops.aten.mm.default(permute_12, view);  permute_12 = None
+
+        # q = self.W_q(x)
+        view_20: "f32[4, 64][64, 1]cuda:0" = torch.ops.aten.view.default(bmm_5, [4, 64]);  bmm_5 = None
+        permute_15: "f32[64, 4][1, 64]cuda:0" = torch.ops.aten.permute.default(view_20, [1, 0]);  view_20 = None
+        mm_5: "f32[64, 64][64, 1]cuda:0" = torch.ops.aten.mm.default(permute_15, view);  permute_15 = view = None
+        return (mm_5, None, mm_4, mm_3)
+  ```
+
+Observe how the backpropagation graph actually starts from the last operations and backtracks it till the top as expected. You will also notice that all the operations are being initialized by `torch.ops.aten`, what is aten?
+
+ATen (short for "A Tensor Library") is the core C++ tensor library underlying almost all tensor operations in PyTorch. It provides:
+
+- The foundational Tensor class in PyTorch.
+- Hundreds of mathematical and tensor operations (such as addition, multiplication, reshaping, etc.).
+- The backend infrastructure to dispatch these operations seamlessly to CPU, CUDA (GPU), and other supported devices.
+
+  Some common ATen opertors you will see in the graph
+  - `aten.mm`: It simply represents a matrix multiplication.
+  - `aten.view`: Used to change the shape of the tensor without modifying the memory layout.
+  - `aten.permute`: Rearranges the dimension of the (axes of the tensors).
+  - `aten.sum`: Sum operation on the given tensor
+  - `aten.exp`: Raises the value by its exponent.
 
 ### 3. TorchInductor
 It further optimizes the graph and generates code to finally run on the hardware. It takes a simplified computation graphs and generates hihgly optimized low level code for the target hardware (CPU, HPU, GPU).
