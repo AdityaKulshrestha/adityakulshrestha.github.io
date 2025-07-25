@@ -248,7 +248,7 @@ For example:
 - At 1 index (4) - This represent the second order in the grid, each array in this block contains a subarray of 64 elements. That means to get to the first element of the next array you need to jump 64 steps. 
 - At 2 index (64) - This is the last index which, for each next element you only need to take the next step.
 
-I strongly suggest you to watch this small chapter from [Umar Jamil's Flash Attention Video on Tensor Layout](https://www.youtube.com/watch?v=zy8ChVd_oTM&t=8788s) to get a better understanding of memory layout and stride.
+I strongly suggest you to watch this small chapter from on Tensor Layout from [Umar Jamil's Flash Attention Video](https://www.youtube.com/watch?v=zy8ChVd_oTM&t=8788s) to get a better understanding of memory layout and stride.
 It will also make you appreciate the subtleness in `.continuous()` and how does tranpose actually make the tensor non-continous. 
 *I am not covering this here since it requires a separate article on its own.*
 
