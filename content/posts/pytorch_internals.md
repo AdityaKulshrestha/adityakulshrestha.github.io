@@ -759,4 +759,4 @@ The PyTorch team has also enabled easier debugging for developers through a flag
 6. [pytorch.compile docs](https://docs.pytorch.org/docs/stable/torch.compiler.html)
 7. [Making GPUs go brr by Horace He](https://horace.io/brrr_intro.html)
 8. [PyTorch Compile vs Export](https://dev.to/minwook/pytorch-compile-vs-export-omc)
-9 [How does torch.compile speed up a transformer](https://www.adamcasson.com/posts/torch-compile-vit)
+9. [How does torch.compile speed up a transformer](https://www.adamcasson.com/posts/torch-compile-vit)
