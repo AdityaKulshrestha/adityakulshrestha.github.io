@@ -743,8 +743,11 @@ All the codes and logs are available in this [notebook](https://colab.research.g
 
 Happy Learning!
 
-*The best environment variable for debugging is*
+*Best environment variable for debugging:*
 `TORCH_COMPILE_DEBUG=1`
+
+The PyTorch team has also enabled easier debugging for developers through a flag. This special flag turns on verbose, and the developer-focused debug logs from different layers of the compiler stack—including TorchDynamo, TorchInductor, and related components. This can include guard checks, graph tracing details, shape information, kernel selection steps, and operations that are being compiled or not compiled.
+
 
 
 #### References 
