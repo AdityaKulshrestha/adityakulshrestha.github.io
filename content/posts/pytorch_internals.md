@@ -56,7 +56,7 @@ The Guard checks the following torch.Tensor properties:
 
 **Intermediate Representation (IR)** - FX Graph and modified bytecode capturing only PyTorch operations and tensors and leaving normal Python non-essentials.
 
-Let's take an example of a simple *Self Attention Code (without masking)*:
+Let's take an example of a simple *Self Attention Code (without masking and scaling factor)*:
 
 ```python
 class Attention(nn.Module):
