@@ -237,6 +237,21 @@ GUARDS:
                 - ID_MATCH: ___check_obj_id(L['self']._modules['W_q']._parameters['bias'], 9695488)
 ```
 
+Note this
+```python
+    - TENSOR_MATCH: check_tensor(L['x'], Tensor, DispatchKeySet(CUDA, BackendSelect, ADInplaceOrView, AutogradCUDA), torch.float32, device=0, requires_grad=False, size=[1, 4, 64], stride=[256, 64, 1])
+```
+This tensor match looks for the input tensors with shape as `[1, 4, 64]` and stride with `[256, 64, 1]`. The stride basically tells how many cells to jump to fetch the next value block. And since the memory are laid in linear format, each index tells how many jumps are required to get to the next block for same dimension.
+
+For example:
+- At 0 index (1) - This represents the batch size, each batch contain a 2D array of shape `[4, 64]` which contains a total of 256 elements. Now, these elements are located in the memory in a linear format. Hence to reach to the next batch, you need to jump 256 steps to get to the next batch.
+- At 1 index (4) - This represent the second order in the grid, each array in this block contains a subarray of 64 elements. That means to get to the first element of the next array you need to jump 64 steps. 
+- At 2 index (64) - This is the last index which, for each next element you only need to take the next step.
+
+I strongly suggest you to watch this small chapter from [Umar Jamil's Flash Attention Video on Tensor Layout](https://www.youtube.com/watch?v=zy8ChVd_oTM&t=8788s) to get a better understanding of memory layout and stride.
+It will also make you appreciate the subtleness in `.continuous()` and how does tranpose actually make the tensor non-continous. 
+*I am not covering this here since it requires a separate article on its own.*
+
 ### 2. Ahead-Of-Time Autograd (AOTAutograd)
 As the name suggests AOTAutograd is responsible for differentiation and backpropagation graph generation.
 it generates the backware computation graph (needed for the gradients and training) from the captured forward graph (passed by the TorchDynamo). However it only captures the backward graph and doesn't apply the graph level optimization.
@@ -518,7 +533,7 @@ We talked about different modes of compilation which can be suited different acc
     ```
     Output: 
     ```python
-    Time to execute: 28.55 ms
+   Time to execute: 26.45 ms
     ```
     Not bad for default, now lets see for other modes.
 
@@ -535,7 +550,7 @@ We talked about different modes of compilation which can be suited different acc
     Output:
 
     ```python
-    Time to execute: 28.55 ms
+    Time to execute: 26.06 ms
     ```
 
 - reduce-overhead
@@ -552,8 +567,9 @@ We talked about different modes of compilation which can be suited different acc
 
     Output: 
     ```python
-    Time to execute: 28.55 ms
+    Time to execute: 26.17
     ```
+Looks like max-autotune is working for our case! Though not much difference since we are not actually dealing with a very large model with large data here. Applying this to larger and more complex models will definitely give you significant gains.
 
 ## Compilation Failures
 
