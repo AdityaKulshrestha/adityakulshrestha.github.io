@@ -38,10 +38,11 @@ I have previously worked at Sarvam.ai on agentic voice agents, PuchAI on mass di
 
 
 ## Updates
-- June 2025: AI Engineering Intern [Puch AI](https://puch.ai/) ([TurboML](https://turboml.com/))
-- January 2025: AI Solutions Engineer [Intel](www.intel.com)
+- August 2025: Performance and Solutions Engineer at [Intel](www.intel.com)
+- June 2025: AI Engineering Intern at [Puch AI](https://puch.ai/) ([TurboML](https://turboml.com/))
+- January 2025: AI Solutions Engineer at [Intel](www.intel.com)
 - January 2025: Undergraduate Research Assistant at [Indraprastha Institute of Information Technology, Delhi](https://www.iiitd.ac.in/)
-- October 2024: AI Engineer Intern [Sarvam.ai](https://www.sarvam.ai/)
+- October 2024: AI Engineer Intern at [Sarvam.ai](https://www.sarvam.ai/)
 
 ## Talks & Achievement
 - May 2025: Delivered a talk on LLM Architecture and its development at IIT Delhi
