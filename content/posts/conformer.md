@@ -143,16 +143,13 @@ By convolution formulat the output channels and data shape becomes:
 $$
 \begin{aligned}
 O_i &= \left[\frac{H_i + 2P_h - K_h}{S_h}\right] + 1 \\[8pt]
-
 H_i &= \text{Input Height} = 3000 \\
 P_h &= \text{Padding Size} = 0 \\
 K_h &= \text{Kernel Size} = 3 \\
 S_h &= \text{Stride} = 2 \\[12pt]
-
 \textbf{After first layer:} \\
 O_i &= \left[\frac{3000 - 3}{2}\right] + 1 \\
     &= 1499 \\[12pt]
-
 \textbf{After second layer:} \\
 O_i &= \left[\frac{1500 - 3}{2}\right] + 1 \\
     &= 749
@@ -276,25 +273,21 @@ across the batch and time dimensions.
 
 $$
 \begin{aligned}
-
 \mu_c
 &=
 \frac{1}{B \cdot T}
 \sum_{b,t} x_{b,t,c}
 \\[10pt]
-
 \sigma_c^2
 &=
 \frac{1}{B \cdot T}
 \sum_{b,t}
 \left(x_{b,t,c} - \mu_c\right)^2
 \\[10pt]
-
 \hat{x}_{b,t,c}
 &=
 \frac{x_{b,t,c} - \mu_c}
 {\sqrt{\sigma_c^2 + \epsilon}}
-
 \end{aligned}
 $$
 
@@ -319,9 +312,7 @@ After passing through the depthwise features, we employ swish for non-linearity.
 
 
 $$
-
 \text{Swish(x)} = x . \sigma(x)
-
 $$
 
 
