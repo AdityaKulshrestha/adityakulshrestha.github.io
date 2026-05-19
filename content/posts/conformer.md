@@ -4,9 +4,6 @@ date = 2026-05-05T19:46:28Z
 draft = false
 +++
 
-
-# Conformer
-
 Conformer architeture is one of the most popular known architecture in ASR system or in audio encoding. It is made up of two words - Convolution and Transformers. Essentially it jointly leverages the benefits of Convolutions which helps local feature extraction and transformers helps in global feature (temporal) and then finally merges both feature infomration on tasks such as translation or transcription generation. 
 
 The blog is organized in the following order:
