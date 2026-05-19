@@ -26,7 +26,7 @@ The data is processed through a series of stages to obtain high quality data. So
     While audios are mostly mono channel, there can be audios with dual channel meaning having left and right channel. Merging of these two channel into monon is performed in channel merging.
 3. Signal to Noise Ratio Filtering
     > Most of the audios comes from different areas having different types of noises like market noise, train, chattering of people in the background. To filter out high quality data we calculate the Signal to Noise Ratio which represents how much noise is there in the audio. Typicall it should be above 10-15dB. It is calculated using: 
-      \\(\text{SNR}_{\text{dB}} = 10 \log_{10} \left( \frac{P_{\text{signal}}}{P_{\text{noise}}} \right)\\)
+      $$\text{SNR}_{\text{dB}} = 10 \log_{10} \left( \frac{P_{\text{signal}}}{P_{\text{noise}}} \right)$$
 
 The above are the most important ones. But there are other stages as well in the pipeline which includes - Voice Activity Detection and silence trimming, Speaking Rate, Loudness Normalization or using an existing ASR model with threshold WER to filter out high quality audios.  
 
@@ -64,7 +64,7 @@ Now that we have our data ready, features processed to make the learning easier 
 
 
 <video controls autoplay loop muted width="800">
-  <source src="../../assets/conformers/audiotomel.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/audiotomel.mp4" type="video/mp4">
 </video>
 
 
@@ -78,14 +78,14 @@ Spectral Augmentation is a audio augmentation technique which is used to avoid o
 We can apply Spec Augmentation by employing two major techniques: 
 1. Time Masking: We mask the data along the time axis in the mel spectrogram.
 <img 
-  src="../../assets/conformers/time_masking.png"
+  src="../../static/assets/conformers/time_masking.png"
   width="500"
   alt="Time Masking - The black band is masking time stamp across frequency"
 />
 
 2. Frequency Masking: We mask the data along the frequency axis of the mel spectrogram. 
 <img 
-  src="../../assets/conformers/frequency_masking.png"
+  src="../../static/assets/conformers/frequency_masking.png"
   width="500"
   alt="Frequency Masking - The black band is masking one frequency spectrum range"
 />
@@ -96,7 +96,7 @@ Let's now dive into the architecture and see what role each layer/component play
 
 Just like a normal transformer block conformer is made up of stacked: 
 
-![Conformer Architecture - Image taken from original paper](../../assets/conformers/conformer_architecture.png)
+![Conformer Architecture - Image taken from original paper](../../static/assets/conformers/conformer_architecture.png)
 
 The conformer architecture has following components each play key role in audio feature extraction and processing.
 
@@ -140,7 +140,7 @@ This is the implementation:
 
 By convolution formulat the output channels and data shape becomes: 
 
-\\(
+$$
 \begin{aligned}
 O_i &= \left[\frac{H_i + 2P_h - K_h}{S_h}\right] + 1 \\[8pt]
 
@@ -157,10 +157,10 @@ O_i &= \left[\frac{3000 - 3}{2}\right] + 1 \\
 O_i &= \left[\frac{1500 - 3}{2}\right] + 1 \\
     &= 749
 \end{aligned}
-\\)
+$$
 
 <video controls autoplay loop muted width="800">
-  <source src="../../assets/conformers/subsampling.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/subsampling.mp4" type="video/mp4">
 </video>
 
 
@@ -169,7 +169,7 @@ Convolution subsampling is then following by a Linear layer to match the interna
 ### Macaron Style Feed Forward Network
 Macaron Style FFN has been taken from [Macaron-Net](https://arxiv.org/pdf/1906.02762). It proposed for using two half FFN layers sandwiching the Multi Head Attention layer and the Convolution Block. The authors have done ablations to verify the benefit of using Macaron style FFN as compared to vanilla. 
 
-![Ablation Study by the authors on FFN vs Macaron-Net FFN](../../assets/conformers/ffn_ablations.png)
+![Ablation Study by the authors on FFN vs Macaron-Net FFN](../../static/assets/conformers/ffn_ablations.png)
 
 
 ### MultiHead Self Attention
@@ -179,7 +179,7 @@ In ASR system, both local and global features becomes super important for final 
 
 The authors have done ablation studies to find out how the number of heads affects the model accuracy. Based on the findings, it is suggested to keep the attention heads upto 16, beyond that the accuracy starts dropping. 
 
-![Ablation Study on Number of Attention Heads](../../assets/conformers/mhsa_ablations.png)
+![Ablation Study on Number of Attention Heads](../../static/assets/conformers/mhsa_ablations.png)
 
 
 ### Convolution Block
@@ -214,7 +214,7 @@ pointwise_conv = nn.Conv2d(
 ```
 
 <video controls autoplay loop muted width="800">
-  <source src="../../assets/conformers/pointwise_conv.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/pointwise_conv.mp4" type="video/mp4">
 </video>
 
 
@@ -225,10 +225,10 @@ Gated Linear Unit activation helps in filtering important features. It acts like
 
 How does it work? It relies on sigmoid function that acts as gating. The input is splitted evenly into two parts. Let's call them A and B matrice. To calculate GLU(X), we employ:
 
-\\( 
+$$ 
 \text{A} \rightarrow \text{A, B} \\
 \text{GLU(X)} = \text{A} \otimes \text{sigmoid(B)}
-\\)
+$$
 
 
 
@@ -248,7 +248,7 @@ depthwise_conv = nn.Conv2d(
 )
 ```
 <video controls autoplay loop muted width="800">
-  <source src="../../assets/conformers/depthwise_conv.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/depthwise_conv.mp4" type="video/mp4">
 </video>
 
 
@@ -262,19 +262,19 @@ BatchNorm applies the normalization per channel across batch and timestep.
 
 Mathematically, 
 
-\\(
+$$
 \begin{aligned}
 
 X &\in \mathbb{R}^{B \times T \times C} \\
 \text{shape}(X) &= (32,\ 100,\ 256)
 
 \end{aligned}
-\\)
+$$
 
 BatchNorm computes statistics independently for each channel \(c\)
 across the batch and time dimensions.
 
-\\(
+$$
 \begin{aligned}
 
 \mu_c
@@ -296,13 +296,13 @@ across the batch and time dimensions.
 {\sqrt{\sigma_c^2 + \epsilon}}
 
 \end{aligned}
-\\)
+$$
 
 Finally, BatchNorm applies learnable scale and bias:
 
-\\(
+$$
 y_{b,t,c} = \gamma_c \hat{x}_{b,t,c} + \beta_c
-\\)
+$$
 
 So if we have 256 channels we will have 256 mean and variance that will be applied across the batch 32 and timestep 100. 
 
@@ -318,11 +318,11 @@ The GLU was used just before the depthwise convolution layers. This was done to 
 After passing through the depthwise features, we employ swish for non-linearity. While there are multiple benefits of using Swish over other activation function, one of the benefit of using swish over other activation function is that it acts as a self gating activation. It decides how much information needs to be passed to the next layer. In the formula below, the sigmoid gives a value between 0 to 1 and x is the features coming from previous layer. The sigmoid value controls the information flow to the next layer while also preserving small feature values. 
 
 
-\\(
+$$
 
 \text{Swish(x)} = x . \sigma(x)
 
-\\)
+$$
 
 
 
@@ -345,7 +345,7 @@ Lastly the layers are joined by the other half of the Macaron-style FFN layer co
 
 So, the sandwich looks like:
 
-\\(
+$$
 \begin{aligned}
 x_1 &= x + \frac{1}{2} \cdot \mathrm{FFN}(x) \\
 \\
@@ -355,7 +355,7 @@ x_3 &= x_2 + \mathrm{ConvModule}(x_2) \\
 \\
 y &= x_3 + \frac{1}{2} \cdot \mathrm{FFN}(x_3)
 \end{aligned}
-\\)
+$$
 
 ### LayerNorm
 Finally, the output is normalized again to be fed again to the encoder.
@@ -384,14 +384,14 @@ Notice that is is fundamentally calling the problem many to one. In simpler term
 
 #### Speaker 1 
 <audio controls>
-  <source src="../../assets/conformers/sample1.wav" type="audio/mpeg">
+  <source src="../../static/assets/conformers/sample1.wav" type="audio/mpeg">
 </audio>
 
 
 #### Speaker 2
 
 <audio controls>
-  <source src="../../assets/conformers/sample2.wav" type="audio/mpeg">
+  <source src="../../static/assets/conformers/sample2.wav" type="audio/mpeg">
 </audio>
 
 <br>
@@ -420,13 +420,13 @@ The final transcript is generated by taking unique consecutive tokens (mmmoorrrn
 
 Mathematically, 
 
-\\(
+$$
 P(y \mid x)
 =
 \sum_{\text{all valid alignments } \pi \text{ for } y}
 \prod_{t=1}^{T}
 P(\pi_t \mid x)
-\\)
+$$
 
 
 It basically gives us a single quantitative probability of y(transcript) given x (input audio). So that we don't have to consider too many possibilities. CTC consider all the different alignment probability and takes a sum of it (the outer summation). To calculate the probability, it uses chain of rule where it takes a product of the probability for token at each timestep. This gives the final probability. 
@@ -439,13 +439,13 @@ Now there are other challenges:
 
 Finally to convert the probability into loss, we use log likelihood. 
 
-\\(
+$$
 \mathcal{L}_{CTC}
 =
 -\log P(y \mid x)
-\\)
+$$
 
-\\(
+$$
 =
 -
 \log
@@ -454,7 +454,7 @@ Finally to convert the probability into loss, we use log likelihood.
 \prod_{t=1}^{T}
 P(\pi_t \mid x)
 \right)
-\\)
+$$
 
 
 ### Evaluation Metrics
@@ -463,11 +463,11 @@ Now once we have trained the models. We use metrics like Word Error Rate or Char
 #### Word Error Rate
 As the name represents, we essentially calculate the number of words errors between the target transcript and the generated transcript. The score is represented in percentage (0-100). The lower the value, the better the ASR model is. To calculate the WER, we use following formula:
 
-\\(
+$$
 WER
 =
 \frac{S + D + I}{N}
-\\)
+$$
 
     S = number of substitutions
     D = number of deletions
@@ -526,20 +526,20 @@ Basically we see how much changes we have to do in terms of (insertion, deletion
 
 <br>
 
-\\(
+$$
 \text{WER} = \frac{(S + D + I)}{N}
 \\[12pt]
 \text{WER} = \frac{1 + 1 + 1}{4} = 0.75 = 75\%
-\\)
+$$
 
 
 #### Character Error Rate
 CER is same as WER but instead of calculating the errors on words, it calculates it on tokens. 
-\\(
+$$
 CER
 =
 \frac{S + D + I}{N}
-\\)
+$$
 
 ## Future Scope and usage
 1. [FastConformer](https://arxiv.org/abs/2305.05084) - Fastconformer was introduced by Nvidia which was a faster variant of conformer giving inference at ~2x better performance. They did aggressive subsampling and also changed the Attention with Longformer style sparse attention. 
