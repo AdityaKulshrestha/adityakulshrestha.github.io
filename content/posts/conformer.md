@@ -64,7 +64,7 @@ Now that we have our data ready, features processed to make the learning easier 
 
 
 <video controls autoplay loop muted width="800">
-  <source src="./assets/conformers/audiotomel.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/audiotomel.mp4" type="video/mp4">
 </video>
 
 
@@ -78,14 +78,14 @@ Spectral Augmentation is a audio augmentation technique which is used to avoid o
 We can apply Spec Augmentation by employing two major techniques: 
 1. Time Masking: We mask the data along the time axis in the mel spectrogram.
 <img 
-  src="./assets/conformers/time_masking.png"
+  src="../../static/assets/conformers/time_masking.png"
   width="500"
   alt="Time Masking - The black band is masking time stamp across frequency"
 />
 
 2. Frequency Masking: We mask the data along the frequency axis of the mel spectrogram. 
 <img 
-  src="./assets/conformers/frequency_masking.png"
+  src="../../static/assets/conformers/frequency_masking.png"
   width="500"
   alt="Frequency Masking - The black band is masking one frequency spectrum range"
 />
@@ -96,7 +96,7 @@ Let's now dive into the architecture and see what role each layer/component play
 
 Just like a normal transformer block conformer is made up of stacked: 
 
-![Conformer Architecture - Image taken from original paper](./assets/conformers/conformer_architecture.png)
+![Conformer Architecture - Image taken from original paper](../../static/assets/conformers/conformer_architecture.png)
 
 The conformer architecture has following components each play key role in audio feature extraction and processing.
 
@@ -160,7 +160,7 @@ O_i &= \left[\frac{1500 - 3}{2}\right] + 1 \\
 $$
 
 <video controls autoplay loop muted width="800">
-  <source src="./assets/conformers/subsampling.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/subsampling.mp4" type="video/mp4">
 </video>
 
 
@@ -169,7 +169,7 @@ Convolution subsampling is then following by a Linear layer to match the interna
 ### Macaron Style Feed Forward Network
 Macaron Style FFN has been taken from [Macaron-Net](https://arxiv.org/pdf/1906.02762). It proposed for using two half FFN layers sandwiching the Multi Head Attention layer and the Convolution Block. The authors have done ablations to verify the benefit of using Macaron style FFN as compared to vanilla. 
 
-![Ablation Study by the authors on FFN vs Macaron-Net FFN](./assets/conformers/ffn_ablations.png)
+![Ablation Study by the authors on FFN vs Macaron-Net FFN](../../static/assets/conformers/ffn_ablations.png)
 
 
 ### MultiHead Self Attention
@@ -179,7 +179,7 @@ In ASR system, both local and global features becomes super important for final 
 
 The authors have done ablation studies to find out how the number of heads affects the model accuracy. Based on the findings, it is suggested to keep the attention heads upto 16, beyond that the accuracy starts dropping. 
 
-![Ablation Study on Number of Attention Heads](./assets/conformers/mhsa_ablations.png)
+![Ablation Study on Number of Attention Heads](../../static/assets/conformers/mhsa_ablations.png)
 
 
 ### Convolution Block
@@ -214,7 +214,7 @@ pointwise_conv = nn.Conv2d(
 ```
 
 <video controls autoplay loop muted width="800">
-  <source src="./assets/conformers/pointwise_conv.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/pointwise_conv.mp4" type="video/mp4">
 </video>
 
 
@@ -248,7 +248,7 @@ depthwise_conv = nn.Conv2d(
 )
 ```
 <video controls autoplay loop muted width="800">
-  <source src="./assets/conformers/depthwise_conv.mp4" type="video/mp4">
+  <source src="../../static/assets/conformers/depthwise_conv.mp4" type="video/mp4">
 </video>
 
 
@@ -384,14 +384,14 @@ Notice that is is fundamentally calling the problem many to one. In simpler term
 
 #### Speaker 1 
 <audio controls>
-  <source src="./assets/conformers/sample1.wav" type="audio/mpeg">
+  <source src="../../static/assets/conformers/sample1.wav" type="audio/mpeg">
 </audio>
 
 
 #### Speaker 2
 
 <audio controls>
-  <source src="./assets/conformers/sample2.wav" type="audio/mpeg">
+  <source src="../../static/assets/conformers/sample2.wav" type="audio/mpeg">
 </audio>
 
 <br>
