@@ -12,7 +12,7 @@ I have previously worked at Sarvam.ai on agentic voice agents, PuchAI on mass di
 
   </div>
     <div style="flex: 0 0 35%; max-width: 35%; display: flex; justify-content: center;">
-  <img src="posts/assets/pp.png"
+  <img src="assets/pp.png"
        alt="Profile Photo"
        style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;W box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
     </div>
