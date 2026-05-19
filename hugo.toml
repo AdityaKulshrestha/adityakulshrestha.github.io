@@ -26,6 +26,11 @@ theme = 'maverick'
     weight = -200
 
 [markup]
+  [markup.goldmark.extensions.passthrough]
+    enable = true
+    [markup.goldmark.extensions.passthrough.delimiters]
+      block = [['$$', '$$'], ['\[', '\]']]
+      inline = [['$', '$'], ['\(', '\)']]
   [markup.goldmark.renderer]
     unsafe = true
   [markup.highlight]
