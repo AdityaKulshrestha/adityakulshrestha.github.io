@@ -4,7 +4,7 @@ date = 2026-05-05T19:46:28Z
 draft = false
 +++
 
-Conformer architeture is one of the most popular known architecture in ASR system or in audio encoding. It is made up of two words - Convolution and Transformers. Essentially it jointly leverages the benefits of Convolutions which helps local feature extraction and transformers helps in global feature (temporal) and then finally merges both feature infomration on tasks such as translation or transcription generation. 
+Conformer architeture is one of the most popular known architecture in ASR system or in audio encoding. It is made up of two words - Convolution and Transformers. Essentially it jointly leverages the advantages of Convolutions that helps in local feature extraction and transformers which helps in global feature (temporal) extraction. Then, finally merges both feature information for tasks such as translation or transcription generation. 
 
 The blog is organized in the following order:
 1. Audio Data and processing
@@ -76,14 +76,14 @@ Spectral Augmentation is a audio augmentation technique which is used to avoid o
 
 
 We can apply Spec Augmentation by employing two major techniques: 
-1. Time Masking: We mask the data along the time axis in the mel spectrogram.
+1. **Time Masking**: We mask the data along the time axis in the mel spectrogram.
 <img 
   src="../../assets/conformers/time_masking.png"
   width="500"
   alt="Time Masking - The black band is masking time stamp across frequency"
 />
 
-2. Frequency Masking: We mask the data along the frequency axis of the mel spectrogram. 
+2. **Frequency Masking**: We mask the data along the frequency axis of the mel spectrogram. 
 <img 
   src="../../assets/conformers/frequency_masking.png"
   width="500"
@@ -120,7 +120,6 @@ The conformer architecture has following components each play key role in audio 
     - e. LayerNorm
 
 The conformer blocks are repeated N times depending on the model size and model parameters. Lets see how each component of the architecture plays a role in the overall audio processing. 
-
 
 
 ### Convolution Subsampling
@@ -215,8 +214,6 @@ pointwise_conv = nn.Conv2d(
 </video>
 
 
-
-
 #### Gated Linear Unit Activation
 Gated Linear Unit activation helps in filtering important features. It acts like a gating mechanism for the input data. Think of it like a filter which will allow only features with actual speaking content and discards all the noise or silence in the model.
 
@@ -248,14 +245,12 @@ depthwise_conv = nn.Conv2d(
   <source src="../../assets/conformers/depthwise_conv.mp4" type="video/mp4">
 </video>
 
-
 #### BatchNorm
 **Question - Why batchnorm now and not earlier? What changed now?**
 We will come to this question in a while but first we need to understand what exactly Batch Norm does. 
 BatchNorm applies the normalization per channel across batch and timestep. 
 
 ![Batch Normalization (Image source from [here](https://www.pinecone.io/learn/batch-layer-normalization/))](https://www.pinecone.io/_next/image/?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fvr8gru94%2Fproduction%2F409b7645d3bdc19d267f6a6bea3bbf75f70636f7-800x535.png&w=1920&q=75)
-
 
 Mathematically, 
 
@@ -308,12 +303,9 @@ The GLU was used just before the depthwise convolution layers. This was done to 
 
 After passing through the depthwise features, we employ swish for non-linearity. While there are multiple benefits of using Swish over other activation function, one of the benefit of using swish over other activation function is that it acts as a self gating activation. It decides how much information needs to be passed to the next layer. In the formula below, the sigmoid gives a value between 0 to 1 and x is the features coming from previous layer. The sigmoid value controls the information flow to the next layer while also preserving small feature values. 
 
-
 $$ 
 \text{Swish(x)} = x . \sigma(x)
 $$ 
-
-
 
 #### PointWise convolution
 As the features reach the final layer, we again employ pointwise convolution to merge the features channels and reduce the dimensionality of features to be passed on. 
@@ -321,13 +313,6 @@ As the features reach the final layer, we again employ pointwise convolution to 
 
 #### Dropout
 Dropout acts as a regularizer which helps in avoiding overfitting of the model. 
-
-
-
-
-<!-- ### Convolution Block
-We covereted convolution block in great details above. The output features from self attention are passed to the convolution block for local features extractions and filtering. -->
-
 
 ### Feed Forward Network
 Lastly the layers are joined by the other half of the Macaron-style FFN layer completing the sandwich. 
@@ -357,7 +342,6 @@ So till now, data processing and model architecturing has been done. Now we come
 
 
 ### Connectionist Temporal Classification
-Connectionist 
 
 First, why do we need CTC loss? Why can't we use the popular loss function such as Mean Squared Error or Cross Entropy. \
 The challenge with ASR model is that it accepts a longer sequence (mel spectrogram) as input and converts it to a shorter sequence output (transcript).
@@ -409,7 +393,7 @@ The final transcript is generated by taking unique consecutive tokens (mmmoorrrn
 
 Mathematically, 
 
-$$ 
+$$
 P(y \mid x) = \sum_{\text{all valid alignments } \pi \text{ for } y} \prod_{t=1}^{T} P(\pi_t \mid x)
 $$ 
 
