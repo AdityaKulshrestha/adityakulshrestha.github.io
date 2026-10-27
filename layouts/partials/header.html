@@ -1,0 +1,11 @@
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href="{{ "/" | relURL }}">{{ site.Params.name }}</a>
+    <nav aria-label="Main">
+      {{ $current := . }}
+      {{ range site.Menus.main }}
+        <a href="{{ .URL }}"{{ if or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }} aria-current="page"{{ end }}>{{ .Name }}</a>
+      {{ end }}
+    </nav>
+  </div>
+</header>

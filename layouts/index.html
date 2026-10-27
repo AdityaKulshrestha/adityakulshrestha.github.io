@@ -1,0 +1,42 @@
+{{ define "main" }}
+<section class="container hero">
+  <div>
+    <h1>{{ site.Params.name }}</h1>
+    <p class="role">{{ site.Params.role }}</p>
+    <p class="interests"><b>I am into</b>{{ delimit site.Params.focus ", " }}</p>
+    <p class="links">
+      {{ range site.Params.socials }}<a href="{{ .url }}" target="_blank" rel="me noopener">{{ .name }}</a>{{ end }}
+    </p>
+  </div>
+  <figure class="portrait">
+    <div class="crop"><img src="{{ site.Params.photo | relURL }}" alt="{{ site.Params.name }}" width="800" height="800"></div>
+  </figure>
+</section>
+
+<section class="container">
+  <h2 class="label">About</h2>
+  <div class="prose">{{ .Content }}</div>
+</section>
+
+<section class="container">
+  <h2 class="label">News</h2>
+  {{ partial "timeline.html" site.Data.home.updates }}
+</section>
+
+<section class="container">
+  <h2 class="label">Personal projects</h2>
+  {{ partial "plain-list.html" site.Data.home.projects }}
+</section>
+
+<section class="container">
+  <h2 class="label">Open source contributions</h2>
+  {{ partial "plain-list.html" site.Data.home.opensource }}
+</section>
+
+<section class="container">
+  <h2 class="label">Talks and achievements</h2>
+  {{ partial "timeline.html" site.Data.home.talks }}
+</section>
+
+{{ partial "gallery.html" . }}
+{{ end }}

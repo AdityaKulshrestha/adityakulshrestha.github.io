@@ -1,0 +1,17 @@
+{{ define "main" }}
+<div class="container narrow">
+  <h1 class="page-title">{{ .Title }}</h1>
+  {{ with .Content }}<div class="prose intro">{{ . }}</div>{{ end }}
+  <ul class="index">
+    {{ range $p := .Pages }}
+    <li>
+      <a href="{{ $p.RelPermalink }}">
+        <span class="num" aria-hidden="true">&bull;</span>
+        <span class="ttl">{{ $p.Title }}</span>
+        <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "Jan 2006" }}</time>
+      </a>
+    </li>
+    {{ end }}
+  </ul>
+</div>
+{{ end }}

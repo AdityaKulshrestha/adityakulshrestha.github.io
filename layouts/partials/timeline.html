@@ -1,0 +1,5 @@
+<dl class="timeline">
+  {{ range . }}
+  <div><dt>{{ .date }}</dt><dd>{{ .text | markdownify }}</dd></div>
+  {{ end }}
+</dl>

@@ -2,6 +2,7 @@
 title = 'Pytorch Compile Internals'
 date = 2025-07-25T12:12:54Z
 draft = false
+description = 'What happens inside torch.compile, from the captured graph to generated kernels.'
 +++
 
 Ever wondered what goes inside when you actually call torch.compile(model)?

@@ -1,0 +1,5 @@
+<ul class="plain-list">
+  {{ range . }}
+  <li><a href="{{ .url }}" target="_blank" rel="noopener">{{ .title }}</a> <span>{{ .text }}</span></li>
+  {{ end }}
+</ul>

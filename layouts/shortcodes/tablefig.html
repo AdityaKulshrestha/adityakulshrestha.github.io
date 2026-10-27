@@ -1,0 +1,4 @@
+<figure class="tablefig">
+  <figcaption>{{ .Get "title" }}</figcaption>
+  {{ .Inner | strings.TrimSpace | .Page.RenderString (dict "display" "block") }}
+</figure>

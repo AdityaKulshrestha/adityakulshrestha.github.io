@@ -1,0 +1,19 @@
+{{/* Slideshow of every image dropped into assets/photos/. */}}
+{{ $photos := where (resources.Match "photos/*") "MediaType.MainType" "image" }}
+{{ with $photos }}
+<section class="container" id="gallery">
+  <h2 class="label">Gallery</h2>
+  <div class="slideshow" data-slideshow>
+    <div class="track">
+      {{ range . }}
+        {{ $img := .Resize "1400x webp q80" }}
+        <figure class="slide">
+          <img src="{{ $img.RelPermalink }}" width="{{ $img.Width }}" height="{{ $img.Height }}" alt="{{ path.BaseName .Name | replace "-" " " | replace "_" " " }}" loading="lazy">
+        </figure>
+      {{ end }}
+    </div>
+    <button class="nav prev" type="button" aria-label="Previous photo">&#8249;</button>
+    <button class="nav next" type="button" aria-label="Next photo">&#8250;</button>
+  </div>
+</section>
+{{ end }}

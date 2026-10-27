@@ -1,0 +1,12 @@
+<div class="entries">
+  {{ range . }}
+  <div class="row entry">
+    <span class="badge {{ .status }}">{{ .tag }}</span>
+    <div>
+      <h3><a href="{{ .url }}" target="_blank" rel="noopener">{{ .title }}</a></h3>
+      <p>{{ .text | markdownify }}</p>
+      {{ with .repo }}<div class="repo">{{ . }}</div>{{ end }}
+    </div>
+  </div>
+  {{ end }}
+</div>

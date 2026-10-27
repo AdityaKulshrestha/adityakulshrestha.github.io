@@ -1,0 +1,23 @@
+{{ define "main" }}
+<article class="container narrow post">
+  <header class="post-head">
+    <h1>{{ .Title }}</h1>
+    <div class="meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      <span>{{ .ReadingTime }} min read</span>
+      {{ range .GetTerms "tags" }}<a class="tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+    </div>
+  </header>
+  {{ if .Fragments.Headings }}
+  <details class="toc"><summary>Contents</summary>{{ .TableOfContents }}</details>
+  <aside class="toc-side">
+    <nav aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      {{ .TableOfContents | replaceRE ` id="TableOfContents"` "" | safeHTML }}
+    </nav>
+  </aside>
+  {{ end }}
+  <div class="prose">{{ .Content }}</div>
+  <p class="back"><a href="{{ "posts/" | relURL }}">&larr; All posts</a></p>
+</article>
+{{ end }}

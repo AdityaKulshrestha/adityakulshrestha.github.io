@@ -2,6 +2,7 @@
 title = 'Conformer'
 date = 2026-05-05T19:46:28Z
 draft = false
+description = 'How the Conformer combines convolution and self-attention for speech recognition and audio encoding.'
 +++
 
 Conformer architeture is one of the most popular known architecture in ASR system or in audio encoding. It is made up of two words - Convolution and Transformers. Essentially it jointly leverages the advantages of Convolutions that helps in local feature extraction and transformers which helps in global feature (temporal) extraction. Then, finally merges both feature information for tasks such as translation or transcription generation. 

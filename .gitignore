@@ -1,2 +1,3 @@
-README.md
-public
+public/
+resources/
+.hugo_build.lock
