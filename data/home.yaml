@@ -1,0 +1,44 @@
+updates:
+  - date: Jul 2026
+    text: Performance Solutions Engineering, Asia Pacific Japan (APJ) region at [Intel](https://www.intel.com)
+  - date: Aug 2025
+    text: Performance and Solutions Engineer at [Intel](https://www.intel.com)
+  - date: Jun 2025
+    text: AI Engineering Intern at [Puch AI](https://puch.ai/) ([TurboML](https://turboml.com/))
+  - date: Jan 2025
+    text: AI Solutions Engineer at [Intel](https://www.intel.com)
+  - date: Jan 2025
+    text: Undergraduate Research Assistant at [IIIT Delhi](https://www.iiitd.ac.in/)
+  - date: Oct 2024
+    text: AI Engineer Intern at [Sarvam.ai](https://www.sarvam.ai/)
+
+talks:
+  - date: May 2025
+    text: Talk on LLM architecture and its development at IIT Delhi
+  - date: Nov 2023
+    text: Amazon ML Summer School 2023
+
+projects:
+  - title: Betaal
+    url: https://github.com/AdityaKulshrestha/Betaal
+    text: Offline dictation for Windows, running speech models on-device with OpenVINO.
+
+opensource:
+  - title: Hugging Face kernels
+    url: https://github.com/huggingface/kernels/pull/727
+    text: Added XPU support for kernel benchmarking.
+  - title: vLLM XPU kernels
+    url: https://github.com/vllm-project/vllm-xpu-kernels/pull/404
+    text: Fixed a crash in GEMM benchmarking.
+  - title: vLLM
+    url: https://github.com/vllm-project/vllm/pull/45267
+    text: Fixed Whisper online benchmarking with profiling.
+  - title: Edge-AI
+    url: https://github.com/AdityaKulshrestha/Edge-AI
+    text: Edge models optimized for Intel AI PCs with OpenVINO, maintained in one place.
+  - title: SGLang
+    url: https://github.com/sgl-project/sglang/pull/32573
+    text: Added the missing layer mapping so Qwen3-VL LoRA adapters load.
+  - title: SmolVLM-Finetune
+    url: https://github.com/2U1/SmolVLM-Finetune/pull/5
+    text: Added fine-tuning support for SmolVLM2.
